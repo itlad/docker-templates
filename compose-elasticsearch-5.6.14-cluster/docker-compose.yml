@@ -1,0 +1,53 @@
+version: "3.1"
+
+services:
+  elasticsearch-central:
+    image: elasticsearch:5.6.4
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_CLUSTERNAME=elasticsearch"
+      # 警用xpack的安全控制，许可证默认30天
+      - "xpack.security.enabled=false"
+    command: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-central:/usr/share/elasticsearch/data
+      - ./nodes/central/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    container_name: elasticsearch-central
+    restart: always
+    networks:
+      - elasticsearch_network
+
+  elasticsearch-node1:
+    image: elasticsearch:5.6.4
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ES_CLUSTERNAME=elasticsearch
+      # 警用xpack的安全控制，许可证默认30天
+      - "xpack.security.enabled=false"
+    command: elasticsearch
+    depends_on:
+      - elasticsearch-master
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    volumes:
+      - elasticsearch-node1:/usr/share/elasticsearch/data
+      - ./nodes/es1/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    container_name: elasticsearch-node-es1
+    restart: always
+    networks:
+      - elasticsearch_network
+
+volumes:
+  elasticsearch-central:
+    name: elasticsearch-central
+  elasticsearch-node1:
+    name: elasticsearch-node1
+
+networks:
+  elasticsearch_network:
+    name: elasticsearch-cluster

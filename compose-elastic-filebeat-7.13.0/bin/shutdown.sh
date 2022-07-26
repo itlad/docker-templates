@@ -1,0 +1,4 @@
+#!/bin/bash                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+echo "正在停止..."                                                                                                                                                                                                             
+docker service ls |grep filebeat-agent | awk '{print "docker service rm "$1}'| sh
+docker config ls |grep filebeat_config | awk '{print "docker config rm "$1}' | sh

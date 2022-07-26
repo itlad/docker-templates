@@ -1,0 +1,55 @@
+version: "2"
+services:
+  zookeeper-node1:
+    image: zookeeper:latest
+    ports:
+      - "21811:2181"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data/node1:/data
+      - ./datalog/node1:/datalog
+    environment:
+      - "ZOO_MY_ID=1"
+      - "ZOO_SERVERS=server.1=zookeeper-node1:2888:3888;2181 server.2=zookeeper-node2:2888:3888;2181 server.3=zookeeper-node3:2888:3888;2181"
+    restart: always
+    container_name: zookeeper-node1
+    networks:
+      - zookeeper_network
+  zookeeper-node2:
+    image: zookeeper:latest
+    ports:
+      - "21812:2181"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data/node2:/data
+      - ./datalog/node2:/datalog
+    environment:
+      - "ZOO_MY_ID=2"
+      - "ZOO_SERVERS=server.1=zookeeper-node1:2888:3888;2181 server.2=zookeeper-node2:2888:3888;2181 server.3=zookeeper-node3:2888:3888;2181"
+    restart: always
+    container_name: zookeeper-node2
+    networks:
+      - zookeeper_network
+  zookeeper-node3:
+    image: zookeeper:latest
+    ports:
+      - "21813:2181"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data/node3:/data
+      - ./datalog/node3:/datalog
+    environment:
+      - "ZOO_MY_ID=3"
+      - "ZOO_SERVERS=server.1=zookeeper-node1:2888:3888;2181 server.2=zookeeper-node2:2888:3888;2181 server.3=zookeeper-node3:2888:3888;2181"
+    restart: always
+    container_name: zookeeper-node3
+    networks:
+      - zookeeper_network
+
+networks:
+  zookeeper_network:
+    name: zookeeper
+

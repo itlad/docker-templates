@@ -1,0 +1,33 @@
+{
+    "name": "logstash-pipline",
+    "description": "logstash-pipline",
+    "processors": [
+        {
+            "grok": {
+                "field": "message",
+                "patterns": [
+                    "%{TIMESTAMP_ISO8601:time}\\s*%{NOTSPACE:application_name}\\s*%{POSINT:port}\\s*%{WORD:profile}\\s*%{LOGLEVEL:level}\\s*%{DATA:logger}\\s*Line:%{NUMBER:logger_line}\\s*\\[%{DATA:thread}\\]\\s*-\\s*%{MULTI_LINE:content}"
+                ],
+                "pattern_definitions": {
+                    "MULTI_LINE": "((.|\r|\n)*)"
+                }
+            }
+        },
+        {
+            "date": {
+                "field": "time",
+                "formats": [
+                    "yyyy-MM-dd HH:mm:ss.SSS"
+                ],
+                "target_field": "@timestamp",
+                "timezone": "Asia/Shanghai"
+            }
+        },
+        {
+            "remove": {
+                "field": "message",
+                "ignore_missing": true
+            }
+        }
+    ]
+}

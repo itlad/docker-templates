@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  mysql-adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    container_name: mysql-adminer
+    restart: always
+    networks:
+      - mysql_network
+
+networks:
+  mysql_network:
+    name: mysql

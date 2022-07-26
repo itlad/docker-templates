@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  postgis:
+    image: mdillon/postgis:9.4
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data:/var/lib/postgresql/data
+    restart: always
+    container_name: postgis
+    networks:
+      - postgis_network
+
+networks:
+  postgis_network:
+    name: postgis

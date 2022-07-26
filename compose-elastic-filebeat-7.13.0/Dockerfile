@@ -1,0 +1,2 @@
+FROM docker.elastic.co/beats/filebeat:7.13.0
+USER root

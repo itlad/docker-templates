@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  gitlab:
+    image: "gitlab/gitlab-ce:12.3.0-ce.0"
+    hostname: "192.168.1.180:3000"
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://192.168.1.180:3000'
+        # Add any other gitlab.rb configuration here, each on its own line
+        gitlab_rails['gitlab_shell_ssh_port'] = 30022
+    ports:
+      # - '443:443'
+      - "3000:3000"
+      - "30022:22"
+    volumes:
+      - "./config:/etc/gitlab"
+      - "./logs:/var/log/gitlab"
+      - "./data:/var/opt/gitlab"
+    restart: always
+    container_name: gitlab
+    networks:
+      - gitlab_network
+
+networks:
+  gitlab_network:
+    name: gitlab

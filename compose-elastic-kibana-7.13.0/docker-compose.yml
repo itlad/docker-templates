@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.0
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./conf/kibana.yml:/usr/share/kibana/config/kibana.yml
+    restart: "always"
+    container_name: kibana
+    networks:
+      - elastic_network
+networks:
+  elastic_network:
+    name: elastic

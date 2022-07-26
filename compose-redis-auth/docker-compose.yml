@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  redis:
+    image: redis
+    command: redis-server --requirepass yourpassword
+    ports:
+      - "6379:6379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - redis-data:/data
+    restart: always
+    container_name: redis
+    networks:
+      - redis_network
+volumes: 
+  redis:
+    name: redis-data
+networks:
+  redis_network:
+    name: redis

@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.4.2
+    ports:
+      - "5044:5044"
+      - "5569:5569"
+      - "9600:9600"
+    environment:
+      - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
+    volumes:
+      - ./pipeline:/usr/share/logstash/pipeline
+      - ./conf/logstash.yml:/usr/share/logstash/config/logstash.yml
+    restart: "always"
+    container_name: logstash
+    networks:
+      - elastic
+networks:
+  elastic_network:
+    name: elastic

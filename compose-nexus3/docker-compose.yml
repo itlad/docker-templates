@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  nexus3:
+    image: sonatype/nexus3
+    ports:
+      - "8081:8081"
+    environment:
+      - INSTALL4J_ADD_VM_PARAMS=-Xms200m -Xmx1000m -XX:MaxDirectMemorySize=5g  -Djava.util.prefs.userRoot=/nexus-data/repos
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - nexus:/nexus-data
+    restart: always
+    container_name: nexus3
+    networks:
+      - nexus_network
+
+volumes:
+  nexus:
+    name: nexus
+
+networks:
+  nexus_network:
+    name: nexus

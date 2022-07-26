@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  node1:
+    image: nacos/nacos-server:${NACOS_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.nacos_role == nacos-node1
+      update_config:
+        parallelism: 1
+        delay: 30s                                                                                                                                                                                                                 
+        failure_action: rollback
+        order: start-first
+      rollback_config:                                                                                                                                                                                                             
+        parallelism: 1
+        delay: 5s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+    ports:
+      - '8848:8848'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /data/docker/nacos/logs:/home/nacos/logs
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVERS
+      - MYSQL_SERVICE_HOST
+      - MYSQL_SERVICE_DB_NAME
+      - MYSQL_SERVICE_PORT
+      - MYSQL_SERVICE_USER
+      - MYSQL_SERVICE_PASSWORD
+    hostname: nacos-node1
+    networks:
+      nacos_network:
+        aliases:
+          - nacos-node1
+  node2:
+    image: nacos/nacos-server:${NACOS_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.nacos_role == nacos-node2
+      update_config:
+        parallelism: 1
+        delay: 30s                                                                                                                                                                                                                 
+        failure_action: rollback
+        order: start-first
+      rollback_config:                                                                                                                                                                                                             
+        parallelism: 1
+        delay: 5s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+    ports:
+      - '8849:8848'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /data/docker/nacos/logs:/home/nacos/logs
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVERS
+      - MYSQL_SERVICE_HOST
+      - MYSQL_SERVICE_DB_NAME
+      - MYSQL_SERVICE_PORT
+      - MYSQL_SERVICE_USER
+      - MYSQL_SERVICE_PASSWORD
+    hostname: nacos-node2
+    networks:
+      nacos_network:
+        aliases:
+          - nacos-node2
+  node3:
+    image: nacos/nacos-server:${NACOS_VERSION}
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.nacos_role == nacos-node3
+      update_config:
+        parallelism: 1
+        delay: 30s                                                                                                                                                                                                                 
+        failure_action: rollback
+        order: start-first
+      rollback_config:                                                                                                                                                                                                             
+        parallelism: 1
+        delay: 5s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+    ports:
+      - '8850:8848'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /data/docker/nacos/logs:/home/nacos/logs
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVERS
+      - MYSQL_SERVICE_HOST
+      - MYSQL_SERVICE_DB_NAME
+      - MYSQL_SERVICE_PORT
+      - MYSQL_SERVICE_USER
+      - MYSQL_SERVICE_PASSWORD
+    hostname: nacos-node3
+    networks:
+      nacos_network:
+        aliases:
+          - nacos-node3
+ 
+networks:
+  nacos_network:
+    external: true
+    name: nacos-server

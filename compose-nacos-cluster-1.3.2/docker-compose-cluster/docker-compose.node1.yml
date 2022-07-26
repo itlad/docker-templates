@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  nacos-node1:
+    image: nacos/nacos-server:1.3.2
+    ports:
+      - '7848:7848'
+      - '8848:8848'
+      - '9555:9555'
+      - '9848:9848'
+      - '9849:9849'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /data/docker/nacos-server/logs:/home/nacos/logs
+    env_file:
+       - ./nacos.env
+    restart: always
+    container_name: nacos-node1
+    networks:
+      - nacos_network
+
+networks:
+  nacos_network:
+    external:
+      name: nacos-server

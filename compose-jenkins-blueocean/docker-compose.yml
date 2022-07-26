@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  jenkins-server:
+    image: docker/jenkinsci/blueocean:latest
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/local/bin/docker-compose:/usr/bin/docker-compose
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/lib64/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+      - jenkins_home:/var/jenkins_home
+    restart: always
+    container_name: jenkins
+    networks:
+      - jenkins_network
+
+volumes: 
+  jenkins_home:
+    name: jenkins_home
+
+networks:
+  jenkins_network:
+    name: jenkins

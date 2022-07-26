@@ -1,0 +1,26 @@
+version: '3.5'
+services:
+  drawio:
+    image: jgraph/drawio:14.0.4
+    container_name: drawio
+    restart: unless-stopped
+      - 8080:8080
+    ports:
+    environment:
+      PUBLIC_DNS: localhost
+      ORGANISATION_UNIT: draw
+      ORGANISATION: draw
+      CITY: GuiYang
+      STATE: Guizhou
+      COUNTRY_CODE: CN
+    healthcheck:                                                                                                                                                                                                               
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - drawio_network
+networks:
+  drawio_network:
+    name: drawio

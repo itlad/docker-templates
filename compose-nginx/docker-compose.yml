@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  nginx:
+    image: docker.io/nginx:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./certs:/etc/nginx/cert:ro
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - ./logs:/logs
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    container_name: nginx
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    name: nginx

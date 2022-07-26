@@ -1,0 +1,21 @@
+version: "2"
+
+services:
+  registry:
+    image: registry
+    ports:
+      - 5000:5000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./repositories:/var/lib/registry
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+    restart: always
+    container_name: registry
+    networks:
+      - registry_network
+
+networks:
+  registry_network:
+    name: registry

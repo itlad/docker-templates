@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  saturn-db:
+    image: saturn/saturn-db:3.3.1
+    ports:
+      - 3308:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=defaultpass
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    container_name: saturn-db
+    restart: always
+    networks:
+      - saturn_network
+  saturn-console:
+    image: saturn/saturn-console:3.3.1
+    depends_on:
+      - saturn-db
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - "JAVA_OPTS=-Xmx2G -Xms2G -XX:MetaspaceSize=256m -MaxMetaspaceSize=512m -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=75 -XX:+ExplicitGCInvokesConcurrent -Xloggc:${HOME}/gc_zk.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:ErrorFile=${HOME}/hs_err_%p.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${HOME}"
+      - "VIP_SATURN_CONSOLE_CLUSTER=default"
+      - "SATURN_CONSOLE_DB_URL=jdbc:mysql://saturn-db:3306/saturn_console"
+      - "SATURN_CONSOLE_DB_USERNAME=root"
+      - "SATURN_CONSOLE_DB_PASSWORD=defaultpass"
+    ports:
+      - 9088:9088
+    restart: always
+    container_name: saturn-console
+    networks:
+      - saturn_network
+
+networks:
+  saturn_network:
+    name: saturn

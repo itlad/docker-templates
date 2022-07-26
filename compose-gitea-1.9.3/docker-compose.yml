@@ -1,0 +1,20 @@
+version: "2"
+
+services:
+  gitea:
+    image: gitea/gitea:1.9.3
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data:/data
+    ports:
+      - "3000:3000"
+      - "3022:22"
+    restart: always
+    container_name: gitea
+    networks:
+      - gitea_network
+
+networks:
+  gitea_network:
+    name: gitea

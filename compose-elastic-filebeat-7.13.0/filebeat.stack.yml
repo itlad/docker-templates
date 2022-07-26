@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  filebeat-agent:
+    build: .
+    image: filebeat:7.13.0
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+      update_config:
+        parallelism: 1
+        delay: 30s
+        failure_action: rollback
+        order: start-first
+      rollback_config:
+        parallelism: 1
+        delay: 5s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+    configs:                                                                                                                                                                                                                   
+      - source: config
+        target: /usr/share/filebeat/filebeat.yml
+    environment:
+      - "ELASTICSEARCH_HOSTS=10.0.5.3"
+      - "ELASTICSEARCH_USERNAME=elastic"
+      - "ELASTICSEARCH_PASSWORD=SJHT...999)))"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "data:/usr/share/filebeat/data"
+      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+volumes:
+  data:
+configs:
+  config:
+    file: ./filebeat/filebeat.yml

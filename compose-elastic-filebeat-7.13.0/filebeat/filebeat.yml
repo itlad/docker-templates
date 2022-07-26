@@ -1,0 +1,32 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+                                                                                                                                                                                                                               
+processors:
+  - drop_fields:
+      fields: ["log","input","host","agent","ecs","stream"]
+      ignore_missing: true
+
+setup.template.name: "filebeat"
+setup.template.pattern: "filebeat-*"
+setup.template.settings:
+  index.number_of_shards: 1
+  index.number_of_replicas: 1
+
+filebeat.inputs:
+- type: container
+  multiline:
+    type: pattern
+    pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+    negate: true
+    match: after
+  include_lines: ['^[1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\s+(20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d\.[0-9]{3} (\S+)\s*(\b(?:[1-9][0-9]*)\b)\s*(\b\w+\b)\s*(INFO|ERROR|DEBUG|WARN)\s*(.*)\s*Line:(\d*)\s*(.*)\s*-\s*((.|\r|\n)*)$']
+  paths:
+    - '/var/lib/docker/containers/*/*-json.log'
+
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+  username: '${ELASTICSEARCH_USERNAME:}'
+  password: '${ELASTICSEARCH_PASSWORD:}'
+  pipeline: 'logstash-pipline'

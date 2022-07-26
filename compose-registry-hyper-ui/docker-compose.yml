@@ -1,0 +1,39 @@
+version: "2"
+
+services:
+  registry:
+    image: registry
+    ports:
+      - 5000:5000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./conf/registry-srv.yml:/etc/docker/registry/config.yml:ro
+      - ./cert/auth.cert:/etc/docker/registry/auth.cert:ro
+      - ./repositories:/var/lib/registry
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+    restart: always
+    container_name: registry
+    networks:
+      - custom_network
+  registry-hyper-ui:
+    image: hyper/docker-registry-web
+    ports:
+      - 8080:8080
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./conf/registry-ui.yml:/conf/config.yml:ro
+      - ./cert/auth.key:/conf/auth.key
+      - ./data:/data
+    depends_on:
+      - registry
+    restart: always
+    container_name: registry-hyper-ui
+    networks:
+      - registry_network
+
+networks:
+  registry_network:
+    name: registry

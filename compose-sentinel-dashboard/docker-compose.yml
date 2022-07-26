@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  sentinel-dashboard:
+    image: sentinel-dashboard:1.8.1
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    restart: always
+    container_name: sentinel-dashboard
+    networks:
+      - sentinel_network
+networks:
+  sentinel_network:
+    name: sentinel

@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  demo-saturn-executor:
+    image: saturn/demo-saturn-executor
+    environment:
+      - "VIP_SATURN_RUNNING_IP=localhost"
+      - "VIP_SATURN_RUNNING_HOSTNAME=node1"
+    volumes:
+      - /saturn-executor/apps
+    restart: always
+    container_name: saturn-console
+    networks:
+      - saturn_network
+
+networks:
+  saturn_network:
+    name: saturn

@@ -1,0 +1,19 @@
+version: "2"
+services:
+  zookeeper:
+    image: zookeeper:latest
+    ports:
+      - "2181:2181"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./data:/data
+      - ./datalog/node1:/datalog
+    restart: always
+    container_name: zookeeper
+    networks:
+      - zookeeper_network
+
+networks:
+  zookeeper_network:
+    name: zookeeper

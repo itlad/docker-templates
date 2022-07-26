@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  redis:
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis-data:/data
+    restart: always
+    container_name: redis
+    networks:
+      - redis_network
+volumes: 
+  redis:
+    name: redis-data
+networks:
+  redis_network:
+    name: redis

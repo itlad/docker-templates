@@ -1,0 +1,47 @@
+version: "3.5"
+
+services:
+  flarum-db:
+    image: mariadb:10.4
+    volumes:
+      - "./mysql/data:/var/lib/mysql"
+    environment:
+      - "TZ"
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
+      - "MYSQL_DATABASE"
+      - "MYSQL_USER"
+      - "MYSQL_PASSWORD"
+    ports:
+      - '3306:3306'
+    container_name: flarum-db
+    restart: always
+  flarum-msmtpd:
+    image: crazymax/msmtpd:latest
+    env_file:
+      - "./msmtpd.env"
+    environment:
+      - "TZ"
+    container_name: flarum_msmtpd
+    restart: always
+  flarum:
+    image: crazymax/flarum:0.1.0-beta.16
+    ports:
+      - '8000:8000'
+    depends_on:
+      - flarum-db
+      - flarum-msmtpd
+    volumes:
+      - "./data:/data"
+      - "./flarum:/opt/flarum"
+    environment:
+      - "TZ"
+      - "PUID"
+      - "PGID"
+      - "DB_HOST=flarum-db"
+      - "DB_NAME=${MYSQL_DATABASE}"
+      - "DB_USER=${MYSQL_USER}"
+      - "DB_PASSWORD=${MYSQL_PASSWORD}"
+    env_file:
+      - "./flarum.env"
+    container_name: flarum
+    restart: always

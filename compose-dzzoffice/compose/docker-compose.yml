@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  dzzoffice:
+    build: ../
+    image: dzzoffice:${DZZOFFICE_VERSION}
+    ports:
+      - "8080:80"
+    volumes: 
+      - ./dzzoffice/www/html:/var/www/html/
+    restart: always
+    container_name: dzzoffice
+    depends_on: 
+      - dzzoffice-document-server
+      - dzzoffice-mysql
+    networks:
+      - dzzoffice
+  dzzoffice-document-server:
+    image: onlyoffice/documentserver
+    ports:
+      - "8081:80"
+    restart: always
+    container_name: dzzoffice-document-server
+    networks:
+      - dzzoffice
+  dzzoffice-mysql:
+    image: docker.io/mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=dzzoffice
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./mysql/data:/var/lib/mysql
+    restart: always
+    container_name: dzzoffice-mysql
+    networks:
+      - dzzoffice
+
+networks:
+  dzzoffice:
+    name: dzzoffice

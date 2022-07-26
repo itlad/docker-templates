@@ -1,0 +1,16 @@
+version: "2"
+
+services:
+  solr:
+    image: solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - ./solr:/opt/solr/server/solr
+    container_name: solr
+    networks:
+      - solr_network
+
+networks:
+  solr_network:
+    name: solr

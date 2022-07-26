@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./influxdb/data:/var/lib/influxdb
+    restart: always
+    container_name: influxdb
+    networks:
+      - influxdata_network
+  kapacitor:
+    image: kapacitor:1.5
+    ports:
+      - "9092:9092"
+    environment:
+      - KAPACITOR_HOSTNAME=kapacitor
+      - KAPACITOR_LOGGING_LEVEL=INFO
+      - KAPACITOR_REPORTING_ENABLED=false
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./kapacitor/data:/var/lib/kapacitor
+    restart: always
+    container_name: kapacitor
+    networks:
+      - influxdata_network
+  chronograf:
+    image: chronograf
+    ports:
+      - '8888:8888'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./chronograf:/var/lib/chronograf
+    depends_on:
+      - influxdb
+      - kapacitor
+    restart: always
+    container_name: chronograf
+    networks:
+      - influxdata_network
+networks:
+  influxdata_network:
+    name: influxdata
